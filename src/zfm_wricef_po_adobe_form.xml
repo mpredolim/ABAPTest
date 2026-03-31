@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SAP Adobe Forms Form: ZFM_PO_ADOBE
+  Object type : Form (SFP - Form Builder)
+  Description : Purchase Order print form used by ZF_WRICEF_PO_FORM.
+  Interface   : ZFM_PO_ADOBE  (see zfm_wricef_po_adobe_interface.xml)
+  Maintained  : Transaction SFP → Layout tab (Adobe LiveCycle Designer)
+-->
+<adobeFormsForm
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  name="ZFM_PO_ADOBE"
+  description="Purchase Order – Adobe Form"
+  formType="PRINT"
+  interface="ZFM_PO_ADOBE"
+  language="EN">
+
+  <!-- ================================================================
+       1.  FORM PROPERTIES
+       ================================================================ -->
+  <properties>
+    <property name="formName"        value="ZFM_PO_ADOBE"/>
+    <property name="description"     value="Purchase Order – Adobe Form"/>
+    <property name="formType"        value="Printed form"/>
+    <property name="language"        value="System language (SY-LANGU)"/>
+    <property name="pageFormat"      value="A4"/>
+    <property name="pageOrientation" value="PORTRAIT"/>
+    <property name="marginTop"       value="15mm"/>
+    <property name="marginBottom"    value="15mm"/>
+    <property name="marginLeft"      value="15mm"/>
+    <property name="marginRight"     value="15mm"/>
+  </properties>
+
+  <!-- ================================================================
+       2.  FORM CONTEXT
+       Import parameters are mapped from the interface into the context
+       tree so that they can be referenced in the layout.
+       ================================================================ -->
+  <context>
+    <contextNode name="IS_HEADER" type="STRUCTURE" interfaceParam="IS_HEADER"
+                 description="Purchase Order header"/>
+    <contextNode name="IT_ITEMS"  type="TABLE"     interfaceParam="IT_ITEMS"
+                 description="Purchase Order items (drives automatic pagination)"/>
+    <contextNode name="IS_TOTALS" type="STRUCTURE" interfaceParam="IS_TOTALS"
+                 description="Purchase Order totals"/>
+  </context>
+
+  <!-- ================================================================
+       3.  FORM LAYOUT  (Adobe LiveCycle Designer subform hierarchy)
+       Binding expressions use XFA dot-notation:  $.contextNode.FIELD
+       ================================================================ -->
+  <layout>
+
+    <!-- ROOT subform – flowed layout, wraps all page content -->
+    <subform name="ROOT" layout="FLOWED">
+
+      <!-- ── Header block ──────────────────────────────────────── -->
+      <subform name="sfHeader" layout="POSITIONED">
+        <staticText name="lblCompanyLogo" value="COMPANY LOGO" posX="140mm" posY="5mm"
+                    width="50mm" height="10mm" note="Optional image placeholder, top-right"/>
+        <staticText name="lblTitle"       value="PURCHASE ORDER" posX="15mm" posY="20mm"
+                    width="80mm" height="8mm" fontWeight="BOLD" fontSize="14pt"/>
+
+        <field name="PrintDate"   binding="$.IS_HEADER.PRINT_DATE"  posX="140mm" posY="20mm"
+               width="50mm" height="6mm" dataType="DATS" description="Print date"/>
+        <field name="PONumber"    binding="$.IS_HEADER.EBELN"        posX="15mm"  posY="30mm"
+               width="80mm" height="6mm" dataType="CHAR" description="PO number"/>
+        <field name="POType"      binding="$.IS_HEADER.BSART"        posX="15mm"  posY="38mm"
+               width="80mm" height="6mm" dataType="CHAR" description="PO type"/>
+        <field name="POCreated"   binding="$.IS_HEADER.BEDAT"        posX="15mm"  posY="46mm"
+               width="80mm" height="6mm" dataType="DATS" description="PO creation date"/>
+
+        <staticText name="lblPONumberCaption"  value="PO Number :" posX="15mm"  posY="30mm"/>
+        <staticText name="lblPOTypeCaption"    value="PO Type   :" posX="15mm"  posY="38mm"/>
+        <staticText name="lblPOCreatedCaption" value="Created   :" posX="15mm"  posY="46mm"/>
+        <staticText name="lblPrintDateCaption" value="Date:"       posX="120mm" posY="20mm"/>
+
+        <drawLine posX="15mm" posY="55mm" width="180mm" strokeColor="#000000"/>
+      </subform>
+
+      <!-- ── Vendor block ──────────────────────────────────────── -->
+      <subform name="sfVendor" layout="POSITIONED">
+        <staticText name="lblVendorSection" value="VENDOR / CUSTOMER" posX="15mm" posY="0mm"
+                    fontWeight="BOLD"/>
+
+        <staticText name="lblVendorID"      value="ID      :" posX="15mm" posY="10mm"/>
+        <staticText name="lblVendorName"    value="Name    :" posX="15mm" posY="18mm"/>
+        <staticText name="lblVendorAddress" value="Address :" posX="15mm" posY="26mm"/>
+
+        <field name="VendorID"      binding="$.IS_HEADER.LIFNR"       posX="45mm" posY="10mm"
+               width="60mm" height="6mm" dataType="CHAR"/>
+        <field name="VendorName"    binding="$.IS_HEADER.VENDOR_NAME"  posX="45mm" posY="18mm"
+               width="120mm" height="6mm" dataType="CHAR"/>
+        <field name="VendorStreet"  binding="$.IS_HEADER.STREET"       posX="45mm" posY="26mm"
+               width="80mm" height="6mm" dataType="CHAR"/>
+        <field name="VendorZIP"     binding="$.IS_HEADER.POSTAL_CODE"  posX="130mm" posY="26mm"
+               width="20mm" height="6mm" dataType="CHAR"/>
+        <field name="VendorCity"    binding="$.IS_HEADER.CITY"         posX="152mm" posY="26mm"
+               width="40mm" height="6mm" dataType="CHAR"/>
+        <field name="VendorCountry" binding="$.IS_HEADER.COUNTRY"      posX="45mm" posY="34mm"
+               width="30mm" height="6mm" dataType="CHAR"/>
+
+        <drawLine posX="15mm" posY="44mm" width="180mm" strokeColor="#000000"/>
+      </subform>
+
+      <!-- ── Items table ───────────────────────────────────────── -->
+      <subform name="sfItemsTable" layout="FLOWED" binding="$.IT_ITEMS">
+
+        <!-- Column header row (static) -->
+        <subform name="sfItemsHeader" layout="POSITIONED">
+          <staticText name="colItem"       value="Item #"      posX="15mm"  posY="0mm" width="15mm" fontWeight="BOLD"/>
+          <staticText name="colDescr"      value="Description" posX="32mm"  posY="0mm" width="60mm" fontWeight="BOLD"/>
+          <staticText name="colQty"        value="Qty"         posX="95mm"  posY="0mm" width="20mm" fontWeight="BOLD"/>
+          <staticText name="colUoM"        value="Unit"        posX="117mm" posY="0mm" width="18mm" fontWeight="BOLD"/>
+          <staticText name="colUnitPrice"  value="Unit Price"  posX="137mm" posY="0mm" width="28mm" fontWeight="BOLD"/>
+          <staticText name="colLineTotal"  value="Line Total"  posX="167mm" posY="0mm" width="28mm" fontWeight="BOLD"/>
+        </subform>
+
+        <!-- Repeating data row – one instance per IT_ITEMS entry -->
+        <subform name="sfItemRow" layout="POSITIONED" repeat="true">
+          <field name="ItemNum"   binding="$.IT_ITEMS[*].EBELP"      posX="15mm"  posY="0mm"
+                 width="15mm" height="6mm" dataType="NUMC"/>
+          <field name="Descr"     binding="$.IT_ITEMS[*].TXZ01"      posX="32mm"  posY="0mm"
+                 width="60mm" height="6mm" dataType="CHAR"/>
+          <field name="Qty"       binding="$.IT_ITEMS[*].MENGE"      posX="95mm"  posY="0mm"
+                 width="20mm" height="6mm" dataType="QUAN"/>
+          <field name="UoM"       binding="$.IT_ITEMS[*].MEINS"      posX="117mm" posY="0mm"
+                 width="18mm" height="6mm" dataType="UNIT"/>
+          <field name="UnitPrice" binding="$.IT_ITEMS[*].NETPR"      posX="137mm" posY="0mm"
+                 width="28mm" height="6mm" dataType="CURR"/>
+          <field name="LineTotal" binding="$.IT_ITEMS[*].LINE_TOTAL" posX="167mm" posY="0mm"
+                 width="28mm" height="6mm" dataType="CURR"/>
+        </subform>
+
+        <drawLine posX="15mm" posY="0mm" width="180mm" strokeColor="#000000"/>
+      </subform>
+
+      <!-- ── Totals block ──────────────────────────────────────── -->
+      <!--
+        Conditional visibility script (JavaScript / FormCalc in LiveCycle):
+          this.presence = (xfa.resolveNode("IT_ITEMS").count > 1) ? "visible" : "hidden";
+      -->
+      <subform name="sfTotals" layout="POSITIONED">
+        <script language="JavaScript" event="initialize">
+          this.presence = (xfa.resolveNode("IT_ITEMS").count &gt; 1) ? "visible" : "hidden";
+        </script>
+
+        <staticText name="lblTotalQty"  value="Total Quantity :" posX="100mm" posY="0mm"/>
+        <staticText name="lblSubtotal"  value="Subtotal       :" posX="100mm" posY="8mm"/>
+        <staticText name="lblTotal"     value="Total          :" posX="100mm" posY="16mm"/>
+
+        <field name="TotalQty"  binding="$.IS_TOTALS.TOTAL_QTY" posX="145mm" posY="0mm"
+               width="25mm" height="6mm" dataType="QUAN"/>
+        <field name="Subtotal"  binding="$.IS_TOTALS.SUBTOTAL"  posX="145mm" posY="8mm"
+               width="25mm" height="6mm" dataType="CURR"/>
+        <field name="TotalAmt"  binding="$.IS_TOTALS.TOTAL"     posX="145mm" posY="16mm"
+               width="25mm" height="6mm" dataType="CURR"/>
+        <field name="Currency"  binding="$.IS_TOTALS.WAERS"     posX="172mm" posY="8mm"
+               width="10mm" height="6mm" dataType="CUKY"/>
+      </subform>
+
+    </subform>
+    <!-- end ROOT -->
+
+  </layout>
+
+  <!-- ================================================================
+       4.  GENERATED FUNCTION MODULE SIGNATURE  (reference only)
+       ================================================================ -->
+  <!--
+    FUNCTION ZFM_PO_ADOBE
+      IMPORTING
+        /1BCDWB/DOCPARAMS  TYPE SFPDOCPARAMS
+        IS_HEADER          TYPE TY_PO_HEADER
+        IT_ITEMS           TYPE TT_PO_ITEMS
+        IS_TOTALS          TYPE TY_PO_TOTALS
+      EXCEPTIONS
+        USAGE_ERROR        = 1
+        SYS_ERROR          = 2
+        INTERNAL_ERROR     = 3.
+  -->
+
+</adobeFormsForm>

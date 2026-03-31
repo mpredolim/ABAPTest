@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SAP Adobe Forms Interface: ZFM_PO_ADOBE
+  Object type : Interface (SFP - Form Builder)
+  Description : Purchase Order print form interface used by ZF_WRICEF_PO_FORM.
+  Maintained  : Transaction SFP
+-->
+<adobeFormsInterface
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  name="ZFM_PO_ADOBE"
+  description="Purchase Order – Adobe Form Interface"
+  language="EN">
+
+  <!-- ================================================================
+       IMPORT PARAMETERS
+       The parameters listed here are exposed on the generated function
+       module ZFM_PO_ADOBE.  Each parameter maps directly to an ABAP
+       field/structure/table type declared in ZF_WRICEF_PO_FORM.
+       ================================================================ -->
+  <parameters>
+
+    <!-- ── IS_HEADER: Purchase Order header data ─────────────────── -->
+    <parameter
+      name="IS_HEADER"
+      passingMode="IMPORT"
+      type="STRUCTURE"
+      abapType="ZF_WRICEF_PO_FORM=&gt;TY_PO_HEADER"
+      description="Purchase Order header">
+
+      <field name="PRINT_DATE"   dataType="DATS" length="8"  description="Current print date"/>
+      <field name="EBELN"        dataType="CHAR" length="10" description="Purchase Order number"/>
+      <field name="BSART"        dataType="CHAR" length="4"  description="PO type"/>
+      <field name="BEDAT"        dataType="DATS" length="8"  description="PO creation date"/>
+      <field name="LIFNR"        dataType="CHAR" length="10" description="Vendor ID"/>
+      <field name="VENDOR_NAME"  dataType="CHAR" length="35" description="Vendor name"/>
+      <field name="STREET"       dataType="CHAR" length="60" description="Street"/>
+      <field name="CITY"         dataType="CHAR" length="35" description="City"/>
+      <field name="COUNTRY"      dataType="CHAR" length="3"  description="Country key"/>
+      <field name="POSTAL_CODE"  dataType="CHAR" length="10" description="Postal code"/>
+    </parameter>
+
+    <!-- ── IT_ITEMS: Purchase Order line items ───────────────────── -->
+    <parameter
+      name="IT_ITEMS"
+      passingMode="IMPORT"
+      type="TABLE"
+      abapType="ZF_WRICEF_PO_FORM=&gt;TY_PO_ITEMS"
+      description="Purchase Order items">
+
+      <field name="EBELP"      dataType="NUMC" length="5"  description="PO item number"/>
+      <field name="TXZ01"      dataType="CHAR" length="40" description="Short description"/>
+      <field name="MENGE"      dataType="QUAN" length="13" description="Ordered quantity"/>
+      <field name="MEINS"      dataType="UNIT" length="3"  description="Unit of measure"/>
+      <field name="NETPR"      dataType="CURR" length="11" description="Net unit price"/>
+      <field name="PEINH"      dataType="DEC"  length="5"  description="Price unit"/>
+      <field name="LINE_TOTAL" dataType="CURR" length="13" description="Line total (qty × price)"/>
+      <field name="WAERS"      dataType="CUKY" length="5"  description="Currency key"/>
+    </parameter>
+
+    <!-- ── IS_TOTALS: Totals block ───────────────────────────────── -->
+    <parameter
+      name="IS_TOTALS"
+      passingMode="IMPORT"
+      type="STRUCTURE"
+      abapType="ZF_WRICEF_PO_FORM=&gt;TY_PO_TOTALS"
+      description="Purchase Order totals">
+
+      <field name="TOTAL_QTY" dataType="QUAN" length="13" description="Total quantity"/>
+      <field name="SUBTOTAL"  dataType="CURR" length="13" description="Subtotal amount"/>
+      <field name="TOTAL"     dataType="CURR" length="13" description="Total amount"/>
+      <field name="WAERS"     dataType="CUKY" length="5"  description="Currency key"/>
+    </parameter>
+
+  </parameters>
+
+</adobeFormsInterface>
