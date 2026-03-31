@@ -4,73 +4,241 @@
   Object type : Interface (SFP - Form Builder)
   Description : Purchase Order print form interface used by ZF_WRICEF_PO_FORM.
   Maintained  : Transaction SFP
+
+  XDP (XML Data Package) format – compatible with Adobe LiveCycle Designer.
+  Generated function module signature (reference only):
+    FUNCTION ZFM_PO_ADOBE
+      IMPORTING
+        /1BCDWB/DOCPARAMS  TYPE SFPDOCPARAMS
+        IS_HEADER          TYPE TY_PO_HEADER        (ZF_WRICEF_PO_FORM=>TY_PO_HEADER)
+        IT_ITEMS           TYPE TT_PO_ITEMS          (ZF_WRICEF_PO_FORM=>TY_PO_ITEMS)
+        IS_TOTALS          TYPE TY_PO_TOTALS         (ZF_WRICEF_PO_FORM=>TY_PO_TOTALS)
+      EXCEPTIONS
+        USAGE_ERROR        = 1
+        SYS_ERROR          = 2
+        INTERNAL_ERROR     = 3.
 -->
-<adobeFormsInterface
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  name="ZFM_PO_ADOBE"
-  description="Purchase Order – Adobe Form Interface"
-  language="EN">
+<xdp:xdp
+  xmlns:xdp="http://ns.adobe.com/xdp/"
+  xmlns:xfa="http://www.xfa.org/schema/xfa-data/1.0/"
+  xmlns:dd="http://ns.adobe.com/data-description/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
   <!-- ================================================================
-       IMPORT PARAMETERS
-       The parameters listed here are exposed on the generated function
-       module ZFM_PO_ADOBE.  Each parameter maps directly to an ABAP
-       field/structure/table type declared in ZF_WRICEF_PO_FORM.
+       DATA DESCRIPTION
+       Formal XML Schema definition of the three interface parameters.
+       Field-level annotations preserve the original SAP ABAP metadata
+       (ABAP type, length, passing mode, source class).
        ================================================================ -->
-  <parameters>
+  <dd:dataDescription name="ZFM_PO_ADOBE">
+    <xsd:schema elementFormDefault="qualified">
 
-    <!-- ── IS_HEADER: Purchase Order header data ─────────────────── -->
-    <parameter
-      name="IS_HEADER"
-      passingMode="IMPORT"
-      type="STRUCTURE"
-      abapType="ZF_WRICEF_PO_FORM=&gt;TY_PO_HEADER"
-      description="Purchase Order header">
+      <!-- Root element that wraps all interface parameters -->
+      <xsd:element name="ZFM_PO_ADOBE">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element ref="IS_HEADER"  minOccurs="1" maxOccurs="1"/>
+            <xsd:element ref="IT_ITEMS"   minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element ref="IS_TOTALS"  minOccurs="1" maxOccurs="1"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
 
-      <field name="PRINT_DATE"   dataType="DATS" length="8"  description="Current print date"/>
-      <field name="EBELN"        dataType="CHAR" length="10" description="Purchase Order number"/>
-      <field name="BSART"        dataType="CHAR" length="4"  description="PO type"/>
-      <field name="BEDAT"        dataType="DATS" length="8"  description="PO creation date"/>
-      <field name="LIFNR"        dataType="CHAR" length="10" description="Vendor ID"/>
-      <field name="VENDOR_NAME"  dataType="CHAR" length="35" description="Vendor name"/>
-      <field name="STREET"       dataType="CHAR" length="60" description="Street"/>
-      <field name="CITY"         dataType="CHAR" length="35" description="City"/>
-      <field name="COUNTRY"      dataType="CHAR" length="3"  description="Country key"/>
-      <field name="POSTAL_CODE"  dataType="CHAR" length="10" description="Postal code"/>
-    </parameter>
+      <!-- ── IS_HEADER: Purchase Order header data ─────────────────── -->
+      <!--
+        SAP metadata:  passingMode="IMPORT"  type="STRUCTURE"
+                       abapType="ZF_WRICEF_PO_FORM=>TY_PO_HEADER"
+      -->
+      <xsd:element name="IS_HEADER">
+        <xsd:annotation>
+          <xsd:documentation>
+            Purchase Order header.
+            ABAP: IS_HEADER IMPORTING STRUCTURE ZF_WRICEF_PO_FORM=&gt;TY_PO_HEADER
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <!-- PRINT_DATE  ABAP:DATS  length:8  – Current print date -->
+            <xsd:element name="PRINT_DATE"  type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:DATS length:8 – Current print date</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- EBELN  ABAP:CHAR  length:10  – Purchase Order number -->
+            <xsd:element name="EBELN"       type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:CHAR length:10 – Purchase Order number</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- BSART  ABAP:CHAR  length:4   – PO type -->
+            <xsd:element name="BSART"       type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:CHAR length:4 – PO type</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- BEDAT  ABAP:DATS  length:8   – PO creation date -->
+            <xsd:element name="BEDAT"       type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:DATS length:8 – PO creation date</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- LIFNR  ABAP:CHAR  length:10  – Vendor ID -->
+            <xsd:element name="LIFNR"       type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:CHAR length:10 – Vendor ID</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- VENDOR_NAME  ABAP:CHAR  length:35  – Vendor name -->
+            <xsd:element name="VENDOR_NAME" type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:CHAR length:35 – Vendor name</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- STREET  ABAP:CHAR  length:60  – Street -->
+            <xsd:element name="STREET"      type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:CHAR length:60 – Street</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- CITY  ABAP:CHAR  length:35  – City -->
+            <xsd:element name="CITY"        type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:CHAR length:35 – City</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- COUNTRY  ABAP:CHAR  length:3   – Country key -->
+            <xsd:element name="COUNTRY"     type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:CHAR length:3 – Country key</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- POSTAL_CODE  ABAP:CHAR  length:10  – Postal code -->
+            <xsd:element name="POSTAL_CODE" type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:CHAR length:10 – Postal code</xsd:documentation></xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
 
-    <!-- ── IT_ITEMS: Purchase Order line items ───────────────────── -->
-    <parameter
-      name="IT_ITEMS"
-      passingMode="IMPORT"
-      type="TABLE"
-      abapType="ZF_WRICEF_PO_FORM=&gt;TY_PO_ITEMS"
-      description="Purchase Order items">
+      <!-- ── IT_ITEMS: Purchase Order line items (repeating) ────────── -->
+      <!--
+        SAP metadata:  passingMode="IMPORT"  type="TABLE"
+                       abapType="ZF_WRICEF_PO_FORM=>TY_PO_ITEMS"
+        maxOccurs="unbounded" on the root ref drives automatic pagination
+        in LiveCycle Designer (binding: $.IT_ITEMS[*]).
+      -->
+      <xsd:element name="IT_ITEMS">
+        <xsd:annotation>
+          <xsd:documentation>
+            Purchase Order items (one element per table row).
+            ABAP: IT_ITEMS IMPORTING TABLE ZF_WRICEF_PO_FORM=&gt;TY_PO_ITEMS
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <!-- EBELP  ABAP:NUMC  length:5   – PO item number -->
+            <xsd:element name="EBELP"      type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:NUMC length:5 – PO item number</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- TXZ01  ABAP:CHAR  length:40  – Short description -->
+            <xsd:element name="TXZ01"      type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:CHAR length:40 – Short description</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- MENGE  ABAP:QUAN  length:13  – Ordered quantity -->
+            <xsd:element name="MENGE"      type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:QUAN length:13 – Ordered quantity</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- MEINS  ABAP:UNIT  length:3   – Unit of measure -->
+            <xsd:element name="MEINS"      type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:UNIT length:3 – Unit of measure</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- NETPR  ABAP:CURR  length:11  – Net unit price -->
+            <xsd:element name="NETPR"      type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:CURR length:11 – Net unit price</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- PEINH  ABAP:DEC   length:5   – Price unit -->
+            <xsd:element name="PEINH"      type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:DEC length:5 – Price unit</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- LINE_TOTAL  ABAP:CURR  length:13  – Line total (qty × price) -->
+            <xsd:element name="LINE_TOTAL" type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:CURR length:13 – Line total (qty × price)</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- WAERS  ABAP:CUKY  length:5   – Currency key -->
+            <xsd:element name="WAERS"      type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:CUKY length:5 – Currency key</xsd:documentation></xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
 
-      <field name="EBELP"      dataType="NUMC" length="5"  description="PO item number"/>
-      <field name="TXZ01"      dataType="CHAR" length="40" description="Short description"/>
-      <field name="MENGE"      dataType="QUAN" length="13" description="Ordered quantity"/>
-      <field name="MEINS"      dataType="UNIT" length="3"  description="Unit of measure"/>
-      <field name="NETPR"      dataType="CURR" length="11" description="Net unit price"/>
-      <field name="PEINH"      dataType="DEC"  length="5"  description="Price unit"/>
-      <field name="LINE_TOTAL" dataType="CURR" length="13" description="Line total (qty × price)"/>
-      <field name="WAERS"      dataType="CUKY" length="5"  description="Currency key"/>
-    </parameter>
+      <!-- ── IS_TOTALS: Totals block ───────────────────────────────── -->
+      <!--
+        SAP metadata:  passingMode="IMPORT"  type="STRUCTURE"
+                       abapType="ZF_WRICEF_PO_FORM=>TY_PO_TOTALS"
+      -->
+      <xsd:element name="IS_TOTALS">
+        <xsd:annotation>
+          <xsd:documentation>
+            Purchase Order totals.
+            ABAP: IS_TOTALS IMPORTING STRUCTURE ZF_WRICEF_PO_FORM=&gt;TY_PO_TOTALS
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <!-- TOTAL_QTY  ABAP:QUAN  length:13  – Total quantity -->
+            <xsd:element name="TOTAL_QTY" type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:QUAN length:13 – Total quantity</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- SUBTOTAL  ABAP:CURR  length:13  – Subtotal amount -->
+            <xsd:element name="SUBTOTAL"  type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:CURR length:13 – Subtotal amount</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- TOTAL  ABAP:CURR  length:13  – Total amount -->
+            <xsd:element name="TOTAL"     type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:CURR length:13 – Total amount</xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <!-- WAERS  ABAP:CUKY  length:5   – Currency key -->
+            <xsd:element name="WAERS"     type="xsd:string" minOccurs="0" maxOccurs="1">
+              <xsd:annotation><xsd:documentation>ABAP:CUKY length:5 – Currency key</xsd:documentation></xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
 
-    <!-- ── IS_TOTALS: Totals block ───────────────────────────────── -->
-    <parameter
-      name="IS_TOTALS"
-      passingMode="IMPORT"
-      type="STRUCTURE"
-      abapType="ZF_WRICEF_PO_FORM=&gt;TY_PO_TOTALS"
-      description="Purchase Order totals">
+    </xsd:schema>
+  </dd:dataDescription>
 
-      <field name="TOTAL_QTY" dataType="QUAN" length="13" description="Total quantity"/>
-      <field name="SUBTOTAL"  dataType="CURR" length="13" description="Subtotal amount"/>
-      <field name="TOTAL"     dataType="CURR" length="13" description="Total amount"/>
-      <field name="WAERS"     dataType="CUKY" length="5"  description="Currency key"/>
-    </parameter>
+  <!-- ================================================================
+       DATA INSTANCE (sample / empty)
+       Provides LiveCycle Designer with a concrete data tree it can use
+       for field binding previews.  The structure mirrors the XSD above:
+         $.IS_HEADER.*        – header fields
+         $.IT_ITEMS[*].*      – one sample item row
+         $.IS_TOTALS.*        – totals fields
+       ================================================================ -->
+  <xfa:datasets>
+    <xfa:data>
+      <ZFM_PO_ADOBE>
 
-  </parameters>
+        <!-- IS_HEADER sample values (empty strings for design-time preview) -->
+        <IS_HEADER>
+          <PRINT_DATE></PRINT_DATE>
+          <EBELN></EBELN>
+          <BSART></BSART>
+          <BEDAT></BEDAT>
+          <LIFNR></LIFNR>
+          <VENDOR_NAME></VENDOR_NAME>
+          <STREET></STREET>
+          <CITY></CITY>
+          <COUNTRY></COUNTRY>
+          <POSTAL_CODE></POSTAL_CODE>
+        </IS_HEADER>
 
-</adobeFormsInterface>
+        <!-- IT_ITEMS: one sample row (repeating; additional rows injected at runtime) -->
+        <IT_ITEMS>
+          <EBELP></EBELP>
+          <TXZ01></TXZ01>
+          <MENGE></MENGE>
+          <MEINS></MEINS>
+          <NETPR></NETPR>
+          <PEINH></PEINH>
+          <LINE_TOTAL></LINE_TOTAL>
+          <WAERS></WAERS>
+        </IT_ITEMS>
+
+        <!-- IS_TOTALS sample values -->
+        <IS_TOTALS>
+          <TOTAL_QTY></TOTAL_QTY>
+          <SUBTOTAL></SUBTOTAL>
+          <TOTAL></TOTAL>
+          <WAERS></WAERS>
+        </IS_TOTALS>
+
+      </ZFM_PO_ADOBE>
+    </xfa:data>
+  </xfa:datasets>
+
+</xdp:xdp>
