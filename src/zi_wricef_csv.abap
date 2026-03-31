@@ -54,7 +54,8 @@ SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-001.
     p_file  TYPE string LOWER CASE OBLIGATORY,
     p_delim TYPE char1  DEFAULT ',',
     p_head  AS CHECKBOX DEFAULT abap_false,
-    p_test  AS CHECKBOX DEFAULT abap_false.
+    p_test  AS CHECKBOX DEFAULT abap_false,
+    p_overw AS CHECKBOX DEFAULT abap_true.   " Overwrite existing records for this file
 SELECTION-SCREEN END OF BLOCK b1.
 
 *&---------------------------------------------------------------------*
@@ -249,11 +250,15 @@ CLASS lcl_csv_interface IMPLEMENTATION.
 
       DATA(lv_num_fields) = lines( lt_fields ).
 
-      IF lv_num_fields >= 1. READ TABLE lt_fields INTO DATA(lv_f) INDEX 1. ls_record-col1 = lv_f. ENDIF.
-      IF lv_num_fields >= 2. READ TABLE lt_fields INTO lv_f INDEX 2.       ls_record-col2 = lv_f. ENDIF.
-      IF lv_num_fields >= 3. READ TABLE lt_fields INTO lv_f INDEX 3.       ls_record-col3 = lv_f. ENDIF.
-      IF lv_num_fields >= 4. READ TABLE lt_fields INTO lv_f INDEX 4.       ls_record-col4 = lv_f. ENDIF.
-      IF lv_num_fields >= 5. READ TABLE lt_fields INTO lv_f INDEX 5.       ls_record-col5 = lv_f. ENDIF.
+      " Map up to 5 fields from the split result into the record structure
+      FIELD-SYMBOLS <lv_col> TYPE char255.
+      DO 5 TIMES.
+        DATA(lv_col_idx) = sy-index.
+        IF lv_col_idx > lv_num_fields. EXIT. ENDIF.
+        READ TABLE lt_fields INTO DATA(lv_f) INDEX lv_col_idx.
+        ASSIGN COMPONENT |COL{ lv_col_idx }| OF STRUCTURE ls_record TO <lv_col>.
+        IF sy-subrc = 0. <lv_col> = lv_f. ENDIF.
+      ENDDO.
 
       APPEND ls_record TO rt_records.
       lv_line_idx = lv_line_idx + 1.
@@ -299,16 +304,25 @@ CLASS lcl_csv_interface IMPLEMENTATION.
 
 
   METHOD insert_records.
-    " Delete existing rows for this file/run to allow re-runs
-    " (optional: comment out to allow accumulating rows)
-    DELETE FROM ztb_csv WHERE filename = p_file.
+    " If overwrite mode is active, remove any previous rows for this
+    " file before inserting so re-runs produce consistent results.
+    IF p_overw = abap_true.
+      DELETE FROM ztb_csv WHERE filename = p_file.
+    ENDIF.
 
     " Bulk insert all parsed records
-    INSERT ztb_csv FROM TABLE it_records
-      ACCEPTING DUPLICATE KEYS.
+    INSERT ztb_csv FROM TABLE it_records.
 
-    rv_inserted = lines( it_records ) - sy-dbcnt.
-    rv_inserted = lines( it_records ).  " Treat all rows as inserted
+    IF sy-subrc = 0 OR sy-subrc = 4.
+      " sy-subrc = 0: all rows inserted; 4: no rows (empty table) – both fine
+      rv_inserted = lines( it_records ).
+    ELSE.
+      " Unexpected error: roll back and report zero inserted
+      ROLLBACK WORK.
+      rv_inserted = 0.
+      MESSAGE |Database insert failed (sy-subrc = { sy-subrc }).| TYPE 'E'.
+      RETURN.
+    ENDIF.
 
     COMMIT WORK AND WAIT.
   ENDMETHOD.
